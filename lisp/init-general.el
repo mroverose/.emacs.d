@@ -21,12 +21,7 @@
 (global-display-line-numbers-mode t)
 
 
-;;Dired设置
-;;(setq ls-lisp-dirs-first t)  ;;首先显示目录
-(setq dired-listing-switches "-alh");;用k/M/G等单位显示文件大小
-;;(setq tab-always-indent 'complete)
-(setq dired-dwim-target t) ;;双面板管理
-;;(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+
 
 (electric-pair-mode t)
 
@@ -74,13 +69,13 @@
   :ensure nil
   :hook (after-init . savehist-mode)
   :init (setq enable-recursive-minibuffers t ;;Allow commands in minibuffers
-	      history-length 1000
-	      savehist-additional-variables '(mark-ring
-					      global-mark-ring
-					      search-ring
-					      regexp-search-ring
-					      extended-command-history)
-	      savehist-autosave-interval 300)
+	          history-length 1000
+	          savehist-additional-variables '(mark-ring
+					                          global-mark-ring
+					                          search-ring
+					                          regexp-search-ring
+					                          extended-command-history)
+	          savehist-autosave-interval 300)
   )
 
 ;;modeline上显示操作的按键和执行的命令
@@ -108,7 +103,52 @@
 
 (global-set-key (kbd "<f2>") 'open-init-file)
 
+;;seletct then  edit will delete automaticly
+(use-package delsel
+  :ensure nil
+  :hook (after-init . delete-selection-mode))
 
+;; Automatic parenthesis pairing
+(use-package elec-pair
+  :ensure nil
+  :hook (after-init . electric-pair-mode)
+  :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
+
+
+                                        ; Multiple cursors
+(use-package multiple-cursors
+  :ensure  t
+  :bind (("C-c m" . multiple-cursors-hydra/body)
+         ("C-S-c C-S-c"   . mc/edit-lines)
+         ("C->"           . mc/mark-next-like-this)
+         ("C-<"           . mc/mark-previous-like-this)
+         ("C-c C-<"       . mc/mark-all-like-this)
+         ("C-M->"         . mc/skip-to-next-like-this)
+         ("C-M-<"         . mc/skip-to-previous-like-this)
+         ("s-<mouse-1>"   . mc/add-cursor-on-click)
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)
+         :map mc/keymap
+         ("C-|" . mc/vertical-align-with-space))
+  :pretty-hydra
+  ((:title (pretty-hydra-title "Multiple Cursors" 'mdicon "nf-md-cursor_move")
+           :color amaranth :quit-key ("q" "C-g"))
+   ("Up"
+	(("p" mc/mark-previous-like-this "prev")
+	 ("P" mc/skip-to-previous-like-this "skip")
+	 ("M-p" mc/unmark-previous-like-this "unmark")
+	 ("|" mc/vertical-align "align with input CHAR"))
+    "Down"
+    (("n" mc/mark-next-like-this "next")
+	 ("N" mc/skip-to-next-like-this "skip")
+	 ("M-n" mc/unmark-next-like-this "unmark"))
+    "Misc"
+    (("l" mc/edit-lines "edit lines" :exit t)
+	 ("a" mc/mark-all-like-this "mark all" :exit t)
+	 ("s" mc/mark-all-in-region-regexp "search" :exit t)
+     ("<mouse-1>" mc/add-cursor-on-click "click"))
+    "% 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")"
+	(("0" mc/insert-numbers "insert numbers" :exit t)
+	 ("A" mc/insert-letters "insert letters" :exit t)))))
 
 
 (provide 'init-general)

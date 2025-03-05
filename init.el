@@ -4,7 +4,10 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+(require 'init-const)
+(require 'init-funcs)
 (require 'init-packages)
+(require 'init-hydra)
 (require 'init-general)
 (require 'init-tools)
 (require 'init-ui)
@@ -15,7 +18,8 @@
 (require 'init-org)
 (require 'init-org-roam)
 (require 'init-markdown)
-
+(require 'init-dired)
+(require 'init-rust)
 
 
 
